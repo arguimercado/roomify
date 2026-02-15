@@ -3,8 +3,9 @@ import type { Route } from "./+types/home";
 
 
 import Hero from "~/features/home/hero";
-import Navbar from "~/features/home/Navbar";
+
 import { useNavigate } from "react-router";
+import Navbar from "~/features/home/navbar";
 
 export function meta({}: Route.MetaArgs) {
   return [
