@@ -1,8 +1,10 @@
 import { ArrowUpRightIcon, ClockIcon } from "lucide-react";
 import type { Route } from "./+types/home";
-import Navbar from "~/layouts/Navbar";
+
 
 import Hero from "~/features/home/hero";
+import Navbar from "~/features/home/Navbar";
+import { useNavigate } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,7 +15,7 @@ export function meta({}: Route.MetaArgs) {
 
 
 const Home = () => {
-
+  
   return(
     <div className="home">
       <Navbar />
