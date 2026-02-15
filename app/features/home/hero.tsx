@@ -2,7 +2,7 @@ import { ArrowRightIcon, LayersIcon } from "lucide-react";
 import { Button } from "components/ui/button";
 
 const Hero = () => {
-	
+
   return (
     <section className="hero">
       <div className="announce">
@@ -31,8 +31,8 @@ const Hero = () => {
             <div className="upload-icon">
               <LayersIcon className="icon" />
             </div>
-            <h3>Upload Your floor plan</h3>
-            <p>Support JPG,PNG formats up to 10MB</p>
+            <h3>Upload your floor plan</h3>
+            <p>Support JPG, PNG formats up to 10MB</p>
           </div>
           <p>Upload Images</p>
         </div>

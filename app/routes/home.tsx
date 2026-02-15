@@ -1,7 +1,7 @@
-import { ArrowRightIcon, ArrowUpRightIcon, ArrowUpRightSquare, ClockIcon, LayersIcon } from "lucide-react";
+import { ArrowUpRightIcon, ClockIcon } from "lucide-react";
 import type { Route } from "./+types/home";
 import Navbar from "~/layouts/Navbar";
-import { Button } from "components/ui/button";
+
 import Hero from "~/features/home/hero";
 
 export function meta({}: Route.MetaArgs) {
@@ -39,7 +39,7 @@ const Home = () => {
                   <h3>Project Makati</h3>
                   <div className="meta">
                     <ClockIcon className="size-4" />
-                    <span>{new Date('01.01.2027').toLocaleDateString()}</span>
+                    <span>{new Date('2027-01-01').toLocaleDateString()}</span>
                     <span className="separator">|</span>
                     <span>by Architect AGM</span>
                   </div>
