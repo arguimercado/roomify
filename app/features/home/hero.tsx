@@ -1,7 +1,16 @@
 import { ArrowRightIcon, LayersIcon } from "lucide-react";
 import { Button } from "components/ui/button";
+import Upload from "components/upload";
+import { useNavigate } from "react-router";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const handleUploadComplete = (base64data: string) =>  {
+    const newId = Date.now().toString();
+    navigate(`visualizer/${newId}`);
+  }
+
 
   return (
     <section className="hero">
@@ -34,7 +43,7 @@ const Hero = () => {
             <h3>Upload your floor plan</h3>
             <p>Support JPG, PNG formats up to 10MB</p>
           </div>
-          <p>Upload Images</p>
+          <Upload onUploadComplete={handleUploadComplete} />
         </div>
       </div>
     </section>
