@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import Navbar from "~/layouts/Navbar";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,6 +8,16 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Home() {
-  return <Welcome />;
+
+const Home = () => {
+
+  return(
+
+    <div className="home">
+      <Navbar />
+      <h1 className="text-xl">Hello World</h1>
+    </div>
+  )
 }
+
+export default  Home;
