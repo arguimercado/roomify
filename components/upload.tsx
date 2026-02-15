@@ -1,5 +1,5 @@
 import { CheckCircle2Icon, ImageIcon, LockIcon, UploadIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router";
 import { PROGRESS_INTERVAL_MS, PROGRESS_STEP, REDIRECT_DELAY_MS } from "../types/constants";
 
@@ -12,12 +12,41 @@ const Upload = ({onUploadComplete} : IProps) => {
 	const [isDragging, setIsDragging] = useState(false);
 	const [progress, setProgress] = useState(0);
 
+	const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+	const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const base64DataRef = useRef<string>("");
+
 	const {isSignedIn} = useOutletContext<AuthContext>();
 
 	const onComplete = (base64Data: string) => {
 		console.log("Upload complete. Base64 data:", base64Data.substring(0, 50) + "...");
 		// Handle the completion - e.g., redirect or pass to parent
 	};
+
+	useEffect(() => {
+		if (progress >= 100) {
+			if (progressIntervalRef.current) {
+				clearInterval(progressIntervalRef.current);
+				progressIntervalRef.current = null;
+			}
+			
+			redirectTimeoutRef.current = setTimeout(() => {
+				onUploadComplete(base64DataRef.current);
+				redirectTimeoutRef.current = null;
+			}, REDIRECT_DELAY_MS);
+		}
+	}, [progress, onUploadComplete]);
+
+	useEffect(() => {
+		return () => {
+			if (progressIntervalRef.current) {
+				clearInterval(progressIntervalRef.current);
+			}
+			if (redirectTimeoutRef.current) {
+				clearTimeout(redirectTimeoutRef.current);
+			}
+		};
+	}, []);
 
 	const processFile = (fileToProcess: File) => {
 		if (!isSignedIn) return;
@@ -28,23 +57,12 @@ const Upload = ({onUploadComplete} : IProps) => {
 		const reader = new FileReader();
 		
 		reader.onload = () => {
-			const base64String = reader.result as string;
+			base64DataRef.current = reader.result as string;
 			
-			const progressInterval = setInterval(() => {
+			progressIntervalRef.current = setInterval(() => {
 				setProgress((prevProgress) => {
 					const newProgress = prevProgress + PROGRESS_STEP;
-					
-					if (newProgress >= 100) {
-						clearInterval(progressInterval);
-						
-						setTimeout(() => {
-							onUploadComplete(base64String);
-						}, REDIRECT_DELAY_MS);
-						
-						return 100;
-					}
-					
-					return newProgress;
+					return newProgress >= 100 ? 100 : newProgress;
 				});
 			}, PROGRESS_INTERVAL_MS);
 		};
