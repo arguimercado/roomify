@@ -2,13 +2,42 @@ import { ArrowRightIcon, LayersIcon } from "lucide-react";
 import { Button } from "components/ui/button";
 import Upload from "components/upload";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import { createProject } from "libs/puter.action";
+import { useProjectContext } from "./project-provider";
 
 const Hero = () => {
-  const navigate = useNavigate();
 
-  const handleUploadComplete = (base64data: string) =>  {
+  const navigate = useNavigate();
+  const { updateProjects } = useProjectContext();  
+
+  const handleUploadComplete = async (base64data: string) =>  {
     const newId = Date.now().toString();
-    navigate(`visualizer/${newId}`);
+    const newName = `Residence ${newId}`;
+
+    const newItem = {
+      id: newId,
+      name: newName,
+      sourceImage: base64data,
+      renderImage: undefined,
+      timestamp: Date.now(),
+    }
+
+    const saved = await createProject({item: newItem, visibility: 'private'});
+    if(!saved) {
+      console.warn('Failed to create project');
+      return false;
+    }
+
+    updateProjects(saved);
+
+    navigate(`visualizer/${newId}`, {
+      state: {
+        initialImage: saved.sourceImage,
+        initialRendered: saved.renderedImage || null,
+        name: saved.name,
+      }
+    });
   }
 
 
