@@ -19,7 +19,7 @@ const Hero = () => {
       id: newId,
       name: newName,
       sourceImage: base64data,
-      renderImage: undefined,
+      renderedImage: undefined,
       timestamp: Date.now(),
     }
 
