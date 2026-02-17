@@ -1,4 +1,3 @@
-import React from 'react'
 import {Box, BoxIcon} from "lucide-react";
 import { Button } from 'components/ui/button';
 import {useOutletContext} from "react-router";

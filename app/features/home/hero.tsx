@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import { createProject } from "libs/puter.action";
 import { useProjectContext } from "./project-provider";
+import { motion } from "framer-motion";
 
 const Hero = () => {
 
@@ -41,6 +42,15 @@ const Hero = () => {
   }
 
 
+  const headlineLines = [
+    "Build beautiful spaces at the speed",
+    "of thought with Roomify",
+  ];
+  const letterAnimation = {
+    hidden: { opacity: 0, y: 8 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
     <section className="hero">
       <div className="announce">
@@ -49,11 +59,34 @@ const Hero = () => {
         </div>
         <p>Introducing Roomify 2.0</p>
       </div>
-      <h1>Build beautiful spaces at the speed of thought with Roomify</h1>
-      <p className="subtitle">
+      <motion.h2
+        className="text-7xl"
+        initial="hidden"
+        animate="visible"
+        transition={{ staggerChildren: 0.02, delayChildren: 0.1 }}
+      >
+        {headlineLines.map((line, lineIndex) => (
+          <motion.span key={`line-${lineIndex}`} className="block">
+            {line.split("").map((char, charIndex) => (
+              <motion.span
+                key={`${lineIndex}-${char}-${charIndex}`}
+                variants={letterAnimation}
+              >
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
+          </motion.span>
+        ))}
+      </motion.h2>
+      <motion.p
+        className="subtitle"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+      >
         Roomify is an AI-powered platform that helps you visualize, render, and
         ship your ideas effortlessly.
-      </p>
+      </motion.p>
       <div className="actions">
         <a href="#upload" className="cta">
           Start Building <ArrowRightIcon className="icon" />
