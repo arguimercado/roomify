@@ -1,11 +1,13 @@
 import { CheckCircle2Icon, ImageIcon, LockIcon, UploadIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router";
+
 import { PROGRESS_INTERVAL_MS, PROGRESS_STEP, REDIRECT_DELAY_MS } from "../types/constants";
 
 interface IProps  {
 	onUploadComplete: (base64Data: string) => void;
 }
+
 const Upload = ({onUploadComplete} : IProps) => {
 	
 	const [file, setFile] = useState<File | null>(null);
@@ -18,10 +20,7 @@ const Upload = ({onUploadComplete} : IProps) => {
 
 	const {isSignedIn} = useOutletContext<AuthContext>();
 
-	const onComplete = (base64Data: string) => {
-		console.log("Upload complete. Base64 data:", base64Data.substring(0, 50) + "...");
-		// Handle the completion - e.g., redirect or pass to parent
-	};
+	
 
 	useEffect(() => {
 		if (progress >= 100) {
@@ -30,6 +29,11 @@ const Upload = ({onUploadComplete} : IProps) => {
 				progressIntervalRef.current = null;
 			}
 			
+
+			if(redirectTimeoutRef.current) {
+				clearTimeout(redirectTimeoutRef.current);
+			}
+
 			redirectTimeoutRef.current = setTimeout(() => {
 				onUploadComplete(base64DataRef.current);
 				redirectTimeoutRef.current = null;
@@ -50,15 +54,20 @@ const Upload = ({onUploadComplete} : IProps) => {
 
 	const processFile = (fileToProcess: File) => {
 		if (!isSignedIn) return;
-
 		setFile(fileToProcess);
 		setProgress(0);
 
 		const reader = new FileReader();
-		
+
+		reader.onerror = () => {
+			setFile(null);
+			setProgress(0);
+			alert("Failed to read the file. Please try again.");
+		};
+
 		reader.onload = () => {
 			base64DataRef.current = reader.result as string;
-			
+
 			progressIntervalRef.current = setInterval(() => {
 				setProgress((prevProgress) => {
 					const newProgress = prevProgress + PROGRESS_STEP;
@@ -66,7 +75,7 @@ const Upload = ({onUploadComplete} : IProps) => {
 				});
 			}, PROGRESS_INTERVAL_MS);
 		};
-		
+
 		reader.readAsDataURL(fileToProcess);
 	};
 
@@ -97,6 +106,11 @@ const Upload = ({onUploadComplete} : IProps) => {
 		setIsDragging(false);
 		
 		const droppedFiles = e.dataTransfer.files;
+		const allowedTypes = ["image/jpeg", "image/png"];
+		if (droppedFiles.length > 0 && !allowedTypes.includes(droppedFiles[0].type)) {
+			alert("Only JPG, JPEG, and PNG images are allowed.");
+			return;
+		}
 		if (droppedFiles && droppedFiles.length > 0) {
 			const selectedFile = droppedFiles[0];
 			processFile(selectedFile);
