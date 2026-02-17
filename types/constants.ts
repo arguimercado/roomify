@@ -1,5 +1,8 @@
 export const PUTER_WORKER_URL = import.meta.env.VITE_PUTER_WORKER_URL || "";
 
+export const HOSTING_CONFIG_KEY = "roomify_hosting_config";
+export const HOSTING_DOMAIN_SUFFIX = ".puter.site";
+
 // Storage Paths
 export const STORAGE_PATHS = {
     ROOT: "roomify",
